@@ -1,5 +1,5 @@
 import prisma from "../../config/db.js";
-import type { Role, User } from "../../generated/prisma";
+import type { Role, User } from "../../generated/prisma/index.js";
 import bcrypt from "bcryptjs";
 
 export async function getAllUsers() {
