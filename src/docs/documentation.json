@@ -1,0 +1,4353 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Job Portal API",
+    "version": "1.0.0",
+    "description": "API Documentation for Job Portal Application"
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authentication endpoints (Register & Login)"
+    },
+    {
+      "name": "Onboarding - Candidate",
+      "description": "Candidate onboarding profile endpoints"
+    },
+    {
+      "name": "Profile - Candidate",
+      "description": "Profile endpoints"
+    },
+    {
+      "name": "Resume - Candidate",
+      "description": "Resume endpoints"
+    },
+    {
+      "name": "Experience - Candidate",
+      "description": "Manage user experiences"
+    },
+    {
+      "name": "Education - Candidate",
+      "description": "Manage user educations"
+    },
+    {
+      "name": "Skills - Candidate",
+      "description": "Manage user skills"
+    },
+    {
+      "name": "Certifications - Candidate",
+      "description": "Manage user certifications"
+    },
+    {
+      "name": "Jobs - Candidate",
+      "description": "Candidate job management endpoints"
+    },
+    {
+      "name": "Onboarding - Recruiter",
+      "description": "Recruiter onboarding endpoints"
+    },
+    {
+      "name": "Jobs - Recruiter",
+      "description": "Recruiter job management endpoints"
+    },
+    {
+      "name": "Applicants - Recruiter",
+      "description": "Recruiter applicant management endpoints"
+    },
+    {
+      "name": "Company Information - Recruiter",
+      "description": "Company information management endpoints"
+    },
+    {
+      "name": "Skills - Admin",
+      "description": "Admin skills management endpoints"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AuthResult"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login with existing credentials",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AuthResult"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/auth/change-email": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Change email address",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Email changed successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/auth/change-password": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Change password",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Password changed successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/onboarding": {
+      "post": {
+        "tags": ["Onboarding - Candidate"],
+        "summary": "Complete the onboarding process for a job seeker",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonalInformationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Onboarding completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OnboardingSuccessResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/resume": {
+      "put": {
+        "tags": ["Resume - Candidate"],
+        "summary": "Upload candidate resume",
+        "description": "Upload a resume file (PDF/DOC/DOCX). The returned `resume_url` will be saved to the candidate's profile.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["resume"],
+                "properties": {
+                  "resume": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Resume file (PDF, DOC, or DOCX, max 5MB)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resume uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "resume_url": {
+                              "type": "string",
+                              "format": "uri",
+                              "description": "URL of the uploaded resume",
+                              "example": "https://cdn.example.com/resumes/uuid-resume.pdf"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/profile/me": {
+      "get": {
+        "tags": ["Profile - Candidate"],
+        "summary": "Get current user profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "applied_jobs": {
+                                  "type": "number",
+                                  "example": 12
+                                },
+                                "interview_calls": {
+                                  "type": "number",
+                                  "example": 1
+                                },
+                                "profile_views": {
+                                  "type": "number",
+                                  "example": 4
+                                },
+                                "applicant_jobs": {
+                                  "type": "number",
+                                  "example": 5
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "user": {
+                                  "$ref": "#/components/schemas/User"
+                                },
+                                "profile": {
+                                  "$ref": "#/components/schemas/PersonalInformationRequest"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/profile": {
+      "put": {
+        "tags": ["Profile - Candidate"],
+        "summary": "Update current user profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Profile updated successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/experiences": {
+      "get": {
+        "tags": ["Experience - Candidate"],
+        "summary": "Get all experiences",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Experience fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Experience"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Experience - Candidate"],
+        "summary": "Create a new experience",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperienceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Experience created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Experience created successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/experiences/{id}": {
+      "put": {
+        "tags": ["Experience - Candidate"],
+        "summary": "Update an experience",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperienceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Experience updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Experience updated successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Experience - Candidate"],
+        "summary": "Delete an experience",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Experience deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Experience deleted successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/educations": {
+      "get": {
+        "tags": ["Education - Candidate"],
+        "summary": "Get educations",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of educations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "allOf": [
+                              {
+                                "$ref": "#/components/schemas/EducationRequest"
+                              },
+                              {
+                                "properties": {
+                                  "id": {
+                                    "type": "integer",
+                                    "description": "Education ID",
+                                    "example": 1
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Education - Candidate"],
+        "summary": "Create a new education",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Education created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Education created successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/educations/{id}": {
+      "get": {
+        "tags": ["Education - Candidate"],
+        "summary": "Get an education by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Education ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Education details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/EducationSingleResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Education - Candidate"],
+        "summary": "Update an education",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Education ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Education updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Education updated successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Education - Candidate"],
+        "summary": "Delete an education",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Education ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Education deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Education deleted successfully"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/skills": {
+      "get": {
+        "tags": ["Skills - Candidate"],
+        "summary": "Get all available skills",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all available skills",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "description": "Skill ID",
+                                "example": 1
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Skill name",
+                                "example": "JavaScript"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Skills - Candidate"],
+        "summary": "Add a skill to candidate profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["skill_id"],
+                "properties": {
+                  "skill_id": {
+                    "type": "integer",
+                    "description": "ID of the skill to add",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Skill added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "description": "UserSkill ID",
+                              "example": 5
+                            },
+                            "user_id": {
+                              "type": "string",
+                              "description": "User ID",
+                              "example": "uuid-string"
+                            },
+                            "skill_id": {
+                              "type": "integer",
+                              "description": "Skill ID",
+                              "example": 1
+                            },
+                            "skill": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "example": 1
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "example": "JavaScript"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/skills/{id}": {
+      "delete": {
+        "tags": ["Skills - Candidate"],
+        "summary": "Remove a skill from candidate profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "UserSkill ID (the junction record ID, not the skill ID)",
+            "schema": {
+              "type": "integer",
+              "example": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Skill removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Skill removed successfully"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/certifications": {
+      "get": {
+        "tags": ["Certifications - Candidate"],
+        "summary": "Get all certifications",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of certifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/CertificationResponse"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Certifications - Candidate"],
+        "summary": "Create a new certification",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CertificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Certification created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Certification created successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/certifications/{id}": {
+      "put": {
+        "tags": ["Certifications - Candidate"],
+        "summary": "Update a certification",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Certification ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CertificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Certification updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Certification updated successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Certifications - Candidate"],
+        "summary": "Delete a certification",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Certification ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Certification deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Certification deleted successfully"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/recomended-jobs": {
+      "get": {
+        "tags": ["Jobs - Candidate"],
+        "summary": "Get recommended jobs",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of recommended jobs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Job"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/jobs": {
+      "get": {
+        "tags": ["Jobs - Candidate"],
+        "summary": "Get all jobs",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search jobs by title, company, or location",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "description": "Filter jobs by location",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter jobs by employment type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN"]
+            }
+          },
+          {
+            "name": "company_name",
+            "in": "query",
+            "description": "Filter jobs by company name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all jobs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Job"
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "totalPages": {
+                              "type": "integer",
+                              "example": 5
+                            },
+                            "totalItems": {
+                              "type": "integer",
+                              "example": 47
+                            },
+                            "itemsPerPage": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "hasNextPage": {
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "hasPreviousPage": {
+                              "type": "boolean",
+                              "example": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/recruiter/job-applicants": {
+      "get": {
+        "tags": ["Jobs - Recruiter"],
+        "summary": "Get my job applicants",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter applicants by status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["Pending", "Interview", "Accepted", "Rejected"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of my job applicants",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/MyApplicant"
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "totalPages": {
+                              "type": "integer",
+                              "example": 3
+                            },
+                            "totalItems": {
+                              "type": "integer",
+                              "example": 25
+                            },
+                            "itemsPerPage": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "hasNextPage": {
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "hasPreviousPage": {
+                              "type": "boolean",
+                              "example": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/job-saved": {
+      "get": {
+        "tags": ["Jobs - Candidate"],
+        "summary": "Get my saved jobs",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of my saved jobs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/JobSaved"
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "totalPages": {
+                              "type": "integer",
+                              "example": 2
+                            },
+                            "totalItems": {
+                              "type": "integer",
+                              "example": 15
+                            },
+                            "itemsPerPage": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "hasNextPage": {
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "hasPreviousPage": {
+                              "type": "boolean",
+                              "example": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/candidate/job-saved/{id}": {
+      "delete": {
+        "tags": ["Jobs - Candidate"],
+        "summary": "Delete a saved job",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Saved job ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved job deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Saved job deleted successfully"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/recruiter/onboarding": {
+      "post": {
+        "tags": ["Onboarding - Recruiter"],
+        "summary": "Complete recruiter onboarding",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecruiterOnboarding"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Recruiter onboarding completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Recruiter onboarding completed successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/recruiter/jobs": {
+      "get": {
+        "tags": ["Jobs - Recruiter"],
+        "summary": "Get recruiter's job postings",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter jobs by status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive", "expired"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of recruiter's job postings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/RecruiterJob"
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "totalPages": {
+                              "type": "integer",
+                              "example": 3
+                            },
+                            "totalItems": {
+                              "type": "integer",
+                              "example": 25
+                            },
+                            "itemsPerPage": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "hasNextPage": {
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "hasPreviousPage": {
+                              "type": "boolean",
+                              "example": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Jobs - Recruiter"],
+        "summary": "Create a new job posting",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecruiterJob"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Job posting created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/RecruiterJob"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/recruiter/jobs/{id}": {
+      "put": {
+        "tags": ["Jobs - Recruiter"],
+        "summary": "Update a job posting",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Job posting ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecruiterJob"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Job posting updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/RecruiterJob"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/recruiter/applicants": {
+      "get": {
+        "tags": ["Applicants - Recruiter"],
+        "summary": "Get recruiter's job applicants",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter applicants by status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["INTERVIEW", "APPLIED", "SHORTLISTED", "REJECTED"]
+            }
+          },
+          {
+            "name": "job_id",
+            "in": "query",
+            "description": "Filter applicants by job ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of recruiter's job applicants",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/RecruiterApplicant"
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "currentPage": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "totalPages": {
+                              "type": "integer",
+                              "example": 3
+                            },
+                            "totalItems": {
+                              "type": "integer",
+                              "example": 25
+                            },
+                            "itemsPerPage": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "hasNextPage": {
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "hasPreviousPage": {
+                              "type": "boolean",
+                              "example": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/recruiter/jobs/{id}/status": {
+      "patch": {
+        "tags": ["Jobs - Recruiter"],
+        "summary": "Accept or reject a job applicant",
+        "description": "Update the status of a job application. Use `action: accept` to accept or `action: reject` to reject. Optionally provide a `reason`.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "Application ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptRejectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Applicant accepted successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/recruiter/company-information": {
+      "get": {
+        "tags": ["Company Information - Recruiter"],
+        "summary": "Get recruiter company information",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company information fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CompanyResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Company Information - Recruiter"],
+        "summary": "Update recruiter company information",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompanyUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Company information updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CompanyResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "tags": ["Users - Admin"],
+        "summary": "Get all users",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/User"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Users - Admin"],
+        "summary": "Create a new user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/admin/users/{id}": {
+      "get": {
+        "tags": ["Users - Admin"],
+        "summary": "Get user by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User UUID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User detail found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "user": {
+                              "$ref": "#/components/schemas/User"
+                            },
+                            "profile": {
+                              "type": "object",
+                              "description": "User profile details (null if not yet completed onboarding)",
+                              "nullable": true,
+                              "properties": {
+                                "id": { "type": "integer", "example": 1 },
+                                "first_name": {
+                                  "type": "string",
+                                  "example": "Budi"
+                                },
+                                "last_name": {
+                                  "type": "string",
+                                  "example": "Santoso"
+                                },
+                                "phone": {
+                                  "type": "string",
+                                  "example": "+628123456789"
+                                },
+                                "date_of_birth": {
+                                  "type": "string",
+                                  "format": "date",
+                                  "example": "1998-05-20"
+                                },
+                                "gender": {
+                                  "type": "string",
+                                  "example": "Male"
+                                },
+                                "address": {
+                                  "type": "string",
+                                  "example": "Jl. Merdeka No. 5"
+                                },
+                                "city": {
+                                  "type": "string",
+                                  "example": "Surabaya"
+                                },
+                                "province": {
+                                  "type": "string",
+                                  "example": "Jawa Timur"
+                                },
+                                "postal_code": {
+                                  "type": "string",
+                                  "example": "60111"
+                                },
+                                "country": {
+                                  "type": "string",
+                                  "example": "Indonesia"
+                                },
+                                "profile_photo_url": {
+                                  "type": "string",
+                                  "format": "uri",
+                                  "example": "https://cdn.example.com/photo.jpg"
+                                },
+                                "bio": {
+                                  "type": "string",
+                                  "example": "Passionate software engineer"
+                                },
+                                "resume_url": {
+                                  "type": "string",
+                                  "format": "uri",
+                                  "example": "https://cdn.example.com/resume.pdf"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users - Admin"],
+        "summary": "Update user status or role",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User UUID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "is_active": {
+                    "type": "boolean",
+                    "description": "Activate or deactivate the user account",
+                    "example": true
+                  },
+                  "is_verified": {
+                    "type": "boolean",
+                    "description": "Mark the user as verified",
+                    "example": true
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["CANDIDATE", "EMPLOYER", "ADMIN"],
+                    "description": "User role",
+                    "example": "CANDIDATE"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/admin/skills": {
+      "post": {
+        "tags": ["Skills - Admin"],
+        "summary": "Create a new skill",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSkillRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Skill created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/SkillsResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Skills - Admin"],
+        "summary": "Get all skills",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all skills",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/SkillsResponse"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/admin/skills/{id}": {
+      "put": {
+        "tags": ["Skills - Admin"],
+        "summary": "Update a skill",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Skill ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSkillRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Skill updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/SkillsResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Skills - Admin"],
+        "summary": "Delete a skill",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Skill ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Skill deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Skill deleted successfully"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["CANDIDATE", "EMPLOYER", "ADMIN"],
+            "example": "CANDIDATE"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "isVerified": {
+            "type": "boolean",
+            "example": false
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "example": "password123"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["CANDIDATE", "EMPLOYER"],
+            "default": "CANDIDATE",
+            "example": "CANDIDATE"
+          }
+        }
+      },
+      "ChangeEmailRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "New email address",
+            "example": "newemail@example.com"
+          }
+        }
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "required": ["password", "password_confirmation"],
+        "properties": {
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "New password",
+            "example": "newpassword123"
+          },
+          "password_confirmation": {
+            "type": "string",
+            "minLength": 8,
+            "description": "Confirm new password",
+            "example": "newpassword123"
+          }
+        }
+      },
+      "AcceptRejectRequest": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["accept", "reject"],
+            "description": "Action to perform on the applicant",
+            "example": "accept"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Optional reason for the action",
+            "example": "Candidate meets all qualifications"
+          }
+        }
+      },
+      "ProfileUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "personal": {
+            "type": "object",
+            "properties": {
+              "firstname": {
+                "type": "string",
+                "example": "John"
+              },
+              "lastname": {
+                "type": "string",
+                "example": "Doe"
+              },
+              "phone": {
+                "type": "string",
+                "example": "1234567890"
+              },
+              "address": {
+                "type": "string",
+                "example": "123 Main St"
+              },
+              "city": {
+                "type": "string",
+                "example": "Malang"
+              },
+              "province": {
+                "type": "string",
+                "example": "Jawa Timur"
+              },
+              "country": {
+                "type": "string",
+                "example": "Indonesia"
+              },
+              "postalCode": {
+                "type": "string",
+                "example": "65111"
+              }
+            }
+          }
+        }
+      },
+      "CompanyUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Acme Corporation"
+          },
+          "company_description": {
+            "type": "string",
+            "description": "Company description",
+            "example": "Technology company focused on innovative solutions"
+          },
+          "industry": {
+            "type": "string",
+            "description": "Industry",
+            "example": "Technology"
+          },
+          "company_size": {
+            "type": "string",
+            "enum": ["1-10", "11-50", "51-200", "201-500", "501-1000", "1000+"],
+            "description": "Number of employees",
+            "example": "51-200"
+          },
+          "website_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Company website URL (optional)",
+            "example": "https://www.example.com"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        }
+      },
+      "AuthResult": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "required": ["email", "password", "role"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "example": "password123"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["CANDIDATE", "EMPLOYER", "ADMIN"],
+            "example": "CANDIDATE"
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data": {}
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Error message"
+          }
+        }
+      },
+      "PersonalInformationRequest": {
+        "type": "object",
+        "properties": {
+          "personal": {
+            "type": "object",
+            "required": [
+              "firstname",
+              "lastname",
+              "phone",
+              "address",
+              "city",
+              "province",
+              "country",
+              "postalCode"
+            ],
+            "properties": {
+              "firstname": {
+                "type": "string",
+                "example": "John"
+              },
+              "lastname": {
+                "type": "string",
+                "example": "Doe"
+              },
+              "phone": {
+                "type": "string",
+                "example": "1234567890"
+              },
+              "address": {
+                "type": "string",
+                "example": "123 Main St"
+              },
+              "city": {
+                "type": "string",
+                "example": "Malang"
+              },
+              "province": {
+                "type": "string",
+                "example": "Jawa Timur"
+              },
+              "country": {
+                "type": "string",
+                "example": "Indonesia"
+              },
+              "postalCode": {
+                "type": "string",
+                "example": "65111"
+              },
+              "resume_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Resume URL (optional, obtained from POST /candidate/resume)",
+                "example": "https://cdn.example.com/resumes/uuid-resume.pdf"
+              }
+            }
+          },
+          "education": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "institution",
+                "degree",
+                "field_of_study",
+                "start_date",
+                "end_date",
+                "is_current",
+                "grade",
+                "description"
+              ],
+              "properties": {
+                "institution": {
+                  "type": "string",
+                  "example": "University of Malang"
+                },
+                "degree": {
+                  "type": "string",
+                  "example": "Bachelor's"
+                },
+                "field_of_study": {
+                  "type": "string",
+                  "example": "Computer Science"
+                },
+                "start_date": {
+                  "type": "string",
+                  "example": "2019-01-01"
+                },
+                "end_date": {
+                  "type": "string",
+                  "example": "2023-01-01"
+                },
+                "is_current": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "grade": {
+                  "type": "float",
+                  "example": "3.85"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "S1 Teknik Informatika"
+                }
+              }
+            }
+          },
+          "experience": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "company",
+                "position",
+                "employment_type",
+                "location_type",
+                "location",
+                "start_date",
+                "end_date",
+                "is_current",
+                "description"
+              ],
+              "properties": {
+                "company": {
+                  "type": "string",
+                  "example": "Google"
+                },
+                "position": {
+                  "type": "string",
+                  "example": "Software Engineer"
+                },
+                "employment_type": {
+                  "type": "string",
+                  "enum": ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN"],
+                  "example": "FULL_TIME"
+                },
+                "location_type": {
+                  "type": "string",
+                  "enum": ["REMOTE", "HYBRID", "ON_SITE"],
+                  "example": "ON_SITE"
+                },
+                "location": {
+                  "type": "string",
+                  "example": "Malang"
+                },
+                "start_date": {
+                  "type": "string",
+                  "example": "2023-01-01"
+                },
+                "end_date": {
+                  "type": "string",
+                  "example": "2024-01-01"
+                },
+                "is_current": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Software Engineer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "OnboardingSuccessResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PersonalInformationRequest"
+          }
+        ]
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MyApplicant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "company_name": {
+            "type": "string",
+            "example": "Google"
+          },
+          "position": {
+            "type": "string",
+            "example": "Senior Product Designer"
+          },
+          "date_applied": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-10-24"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Pending", "Interview", "Accepted", "Rejected"],
+            "example": "Pending"
+          }
+        }
+      },
+      "JobApplication": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "company_name": {
+            "type": "string",
+            "example": "Google"
+          },
+          "position": {
+            "type": "string",
+            "example": "Senior Product Designer"
+          },
+          "date_applied": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-10-24"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Pending", "Interview", "Accepted", "Rejected"],
+            "example": "Pending"
+          }
+        }
+      },
+      "JobSaved": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "b2c3d4e5-f6g7-8901-bcde-f23456789012"
+          },
+          "title": {
+            "type": "string",
+            "example": "Senior Product Manager"
+          },
+          "company_name": {
+            "type": "string",
+            "example": "Zendesk"
+          },
+          "location": {
+            "type": "string",
+            "example": "Remote"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN"],
+            "example": "FULL_TIME"
+          },
+          "saved_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-15T10:30:00Z"
+          }
+        }
+      },
+      "RecruiterOnboarding": {
+        "type": "object",
+        "required": [
+          "company_name",
+          "company_description",
+          "industry",
+          "company_size"
+        ],
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "description": "Name of the company",
+            "example": "Acme Corporation"
+          },
+          "company_description": {
+            "type": "string",
+            "description": "Description of what the company does",
+            "example": "Technology company focused on innovative solutions"
+          },
+          "industry": {
+            "type": "string",
+            "description": "Industry sector the company operates in",
+            "example": "Technology, Finance"
+          },
+          "company_size": {
+            "type": "string",
+            "enum": ["1-10", "11-50", "51-200", "201-500", "501-1000", "1000+"],
+            "description": "Number of employees in the company",
+            "example": "51-200"
+          },
+          "website_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Company website URL (optional)",
+            "example": "https://www.example.com"
+          }
+        }
+      },
+      "RecruiterJob": {
+        "type": "object",
+        "required": [
+          "job_title",
+          "employment_type",
+          "location_type",
+          "location",
+          "currency",
+          "min_salary",
+          "max_salary",
+          "experience_level",
+          "education_level",
+          "deadline",
+          "description",
+          "requirements",
+          "responsibilities",
+          "benefits",
+          "skills"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "job_title": {
+            "type": "string",
+            "description": "Title of the job position",
+            "example": "Senior Software Engineer"
+          },
+          "employment_type": {
+            "type": "string",
+            "enum": ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN"],
+            "description": "Type of employment",
+            "example": "FULL_TIME"
+          },
+          "location_type": {
+            "type": "string",
+            "enum": ["ONSITE", "REMOTE", "HYBRID"],
+            "description": "Type of work location",
+            "example": "ONSITE"
+          },
+          "location": {
+            "type": "string",
+            "description": "City, Country of the job location",
+            "example": "Singapore"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency code for salary",
+            "example": "USD"
+          },
+          "min_salary": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Minimum salary amount",
+            "example": 5000.0
+          },
+          "max_salary": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Maximum salary amount",
+            "example": 8000.0
+          },
+          "experience_level": {
+            "type": "string",
+            "description": "Required experience level",
+            "example": "5+ years"
+          },
+          "education_level": {
+            "type": "string",
+            "description": "Required education level",
+            "example": "Bachelor's Degree"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date",
+            "description": "Application deadline",
+            "example": "2024-12-31"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether the job listing is active",
+            "default": true,
+            "example": true
+          },
+          "description": {
+            "type": "string",
+            "description": "General job overview and description",
+            "example": "We are looking for a talented Senior Software Engineer to join our team..."
+          },
+          "requirements": {
+            "type": "string",
+            "description": "Technical requirements for the position",
+            "example": "5+ years of experience with React and Node.js..."
+          },
+          "responsibilities": {
+            "type": "string",
+            "description": "Daily responsibilities and duties",
+            "example": "Develop and maintain web applications..."
+          },
+          "benefits": {
+            "type": "string",
+            "description": "Perks and benefits offered",
+            "example": "Health insurance, flexible work hours, gym membership..."
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of required skills",
+            "example": ["React", "Typescript", "Figma"]
+          },
+          "applicants_count": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Number of applicants for this job",
+            "example": 12
+          },
+          "views_count": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Number of views for this job posting",
+            "example": 245
+          },
+          "post_date": {
+            "type": "string",
+            "format": "date",
+            "readOnly": true,
+            "description": "Date when the job was posted",
+            "example": "2024-01-15"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2024-01-15T10:30:00Z"
+          }
+        }
+      },
+      "RecruiterApplicant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "candidate_name": {
+            "type": "string",
+            "description": "Name of the candidate",
+            "example": "Alex Johnson"
+          },
+          "candidate_email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email of the candidate",
+            "example": "alex.johnson@example.com"
+          },
+          "candidate_phone": {
+            "type": "string",
+            "description": "Phone number of the candidate",
+            "example": "+1234567890"
+          },
+          "candidate_resume_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the candidate's resume",
+            "example": "https://example.com/alex_johnson_resume.pdf"
+          },
+          "applied_job_title": {
+            "type": "string",
+            "description": "Title of the job the candidate applied for",
+            "example": "Senior Product Designer"
+          },
+          "date_applied": {
+            "type": "string",
+            "format": "date",
+            "description": "Date when the candidate applied",
+            "example": "2023-10-24"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["INTERVIEW", "APPLIED", "SHORTLISTED", "REJECTED"],
+            "description": "Current status of the application",
+            "example": "INTERVIEW"
+          }
+        }
+      },
+      "ExperienceRequest": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Google"
+          },
+          "position": {
+            "type": "string",
+            "description": "Position or Job title",
+            "example": "Software Engineer"
+          },
+          "employment_type": {
+            "type": "string",
+            "description": "Employment type",
+            "enum": ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN", "OTHER"],
+            "example": "FULL_TIME"
+          },
+          "location_type": {
+            "type": "string",
+            "description": "Location type",
+            "enum": ["REMOTE", "ON_SITE", "HYBRID"],
+            "example": "REMOTE"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location",
+            "example": "Jakarta"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Start date",
+            "example": "2022-01-01"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "End date",
+            "example": "2022-12-31"
+          },
+          "responsibilities": {
+            "type": "string",
+            "description": "Responsibilities",
+            "example": "Developed a new feature that improved user engagement"
+          }
+        }
+      },
+      "Experience": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Experience ID",
+            "example": 1
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID",
+            "example": 1
+          },
+          "company_name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Google"
+          },
+          "position": {
+            "type": "string",
+            "description": "Position or Job title",
+            "example": "Software Engineer"
+          },
+          "employment_type": {
+            "type": "string",
+            "description": "Employment type",
+            "enum": ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN", "OTHER"],
+            "example": "FULL_TIME"
+          },
+          "location_type": {
+            "type": "string",
+            "description": "Location type",
+            "enum": ["REMOTE", "ON_SITE", "HYBRID"],
+            "example": "REMOTE"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location",
+            "example": "Jakarta"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Start date",
+            "example": "2022-01-01"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "End date",
+            "example": "2022-12-31"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description",
+            "example": "Developed a new feature that improved user engagement"
+          }
+        }
+      },
+      "EducationRequest": {
+        "type": "object",
+        "properties": {
+          "institution": {
+            "type": "string",
+            "description": "Institution name",
+            "example": "Universitas Indonesia"
+          },
+          "degree": {
+            "type": "string",
+            "description": "Degree type",
+            "enum": ["BACHELOR", "MASTER", "DOCTORATE", "DIPLOMA", "OTHER"],
+            "example": "BACHELOR"
+          },
+          "field_of_study": {
+            "type": "string",
+            "description": "Field of study",
+            "example": "Computer Science"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Start date",
+            "example": "2022-01-01"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "End date",
+            "example": "2022-12-31"
+          },
+          "grade": {
+            "type": "number",
+            "description": "GPA/Grade",
+            "example": "3.55"
+          },
+          "is_current": {
+            "type": "boolean",
+            "description": "Is current",
+            "example": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Description",
+            "example": "Developed a new feature that improved user engagement"
+          }
+        }
+      },
+      "EducationSingleResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Education ID",
+                "example": 1
+              },
+              "user_id": {
+                "type": "integer",
+                "description": "User ID",
+                "example": 1
+              },
+              "institution": {
+                "type": "string",
+                "description": "Institution name",
+                "example": "Universitas Indonesia"
+              },
+              "degree": {
+                "type": "string",
+                "description": "Degree type",
+                "enum": ["BACHELOR", "MASTER", "DOCTORATE", "DIPLOMA", "OTHER"],
+                "example": "BACHELOR"
+              },
+              "field_of_study": {
+                "type": "string",
+                "description": "Field of study",
+                "example": "Computer Science"
+              },
+              "start_date": {
+                "type": "string",
+                "format": "date",
+                "description": "Start date",
+                "example": "2022-01-01"
+              },
+              "end_date": {
+                "type": "string",
+                "format": "date",
+                "description": "End date",
+                "example": "2022-12-31"
+              },
+              "grade": {
+                "type": "number",
+                "description": "GPA/Grade",
+                "example": "3.55"
+              },
+              "is_current": {
+                "type": "boolean",
+                "description": "Is current",
+                "example": true
+              },
+              "description": {
+                "type": "string",
+                "description": "Description",
+                "example": "Developed a new feature that improved user engagement"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Created at",
+                "example": "2022-01-01T00:00:00.000Z"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Updated at",
+                "example": "2022-01-01T00:00:00.000Z"
+              }
+            }
+          }
+        }
+      },
+      "CreateSkillRequest": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Skill name",
+            "example": "JavaScript"
+          }
+        }
+      },
+      "UpdateSkillRequest": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Skill ID",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Skill name",
+            "example": "JavaScript"
+          }
+        }
+      },
+      "SkillsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Skill ID",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Skill name",
+                  "example": "JavaScript"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CertificationRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "issuing_organization",
+          "issue_date",
+          "expiry_date",
+          "description"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Certification name",
+            "example": "AWS Certified Solutions Architect"
+          },
+          "issuing_organization": {
+            "type": "string",
+            "description": "Issuing organization",
+            "example": "Amazon Web Services"
+          },
+          "issue_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Issue date",
+            "example": "2023-06-01"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Expiry date",
+            "example": "2026-06-01"
+          },
+          "credential_id": {
+            "type": "string",
+            "description": "Credential ID (optional)",
+            "example": "AWS-123456"
+          },
+          "credential_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Credential verification URL (optional)",
+            "example": "https://www.credly.com/badges/aws-123456"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description",
+            "example": "Demonstrates expertise in designing distributed systems on AWS"
+          }
+        }
+      },
+      "CertificationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Certification ID",
+            "example": 1
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User ID",
+            "example": "uuid-string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Certification name",
+            "example": "AWS Certified Solutions Architect"
+          },
+          "issuing_organization": {
+            "type": "string",
+            "description": "Issuing organization",
+            "example": "Amazon Web Services"
+          },
+          "issue_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Issue date",
+            "example": "2023-06-01"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Expiry date",
+            "example": "2026-06-01"
+          },
+          "credential_id": {
+            "type": "string",
+            "description": "Credential ID",
+            "example": "AWS-123456"
+          },
+          "credential_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Credential URL",
+            "example": "https://www.credly.com/badges/aws-123456"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description",
+            "example": "Demonstrates expertise in designing distributed systems on AWS"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-06-01T00:00:00.000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-06-01T00:00:00.000Z"
+          }
+        }
+      },
+      "CompanyUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "PT Teknologi Maju"
+          },
+          "description": {
+            "type": "string",
+            "description": "Company description",
+            "example": "A leading technology company in Indonesia"
+          },
+          "industry": {
+            "type": "string",
+            "description": "Industry sector",
+            "example": "Information Technology"
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "description": "Company website URL (optional)",
+            "example": "https://teknologimaju.co.id"
+          },
+          "logo_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Company logo URL (optional)",
+            "example": "https://cdn.example.com/logo.png"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Company contact email",
+            "example": "hr@teknologimaju.co.id"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Company phone number",
+            "example": "+6221-1234567"
+          },
+          "address": {
+            "type": "string",
+            "description": "Company address",
+            "example": "Jl. Sudirman No. 10"
+          },
+          "city": {
+            "type": "string",
+            "description": "City",
+            "example": "Jakarta"
+          },
+          "province": {
+            "type": "string",
+            "description": "Province",
+            "example": "DKI Jakarta"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country",
+            "example": "Indonesia"
+          },
+          "company_size": {
+            "type": "string",
+            "description": "Company size range",
+            "example": "51-200"
+          }
+        }
+      },
+      "CompanyResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Company ID",
+            "example": "uuid-string"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Owner user ID",
+            "example": "uuid-string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "PT Teknologi Maju"
+          },
+          "description": {
+            "type": "string",
+            "description": "Company description",
+            "example": "A leading technology company in Indonesia"
+          },
+          "industry": {
+            "type": "string",
+            "description": "Industry sector",
+            "example": "Information Technology"
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "description": "Company website URL",
+            "example": "https://teknologimaju.co.id"
+          },
+          "logo_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Company logo URL",
+            "example": "https://cdn.example.com/logo.png"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Company contact email",
+            "example": "hr@teknologimaju.co.id"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Company phone number",
+            "example": "+6221-1234567"
+          },
+          "address": {
+            "type": "string",
+            "description": "Company address",
+            "example": "Jl. Sudirman No. 10"
+          },
+          "city": {
+            "type": "string",
+            "description": "City",
+            "example": "Jakarta"
+          },
+          "province": {
+            "type": "string",
+            "description": "Province",
+            "example": "DKI Jakarta"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country",
+            "example": "Indonesia"
+          },
+          "company_size": {
+            "type": "string",
+            "description": "Company size range",
+            "example": "51-200"
+          },
+          "is_verified": {
+            "type": "boolean",
+            "description": "Company verification status",
+            "example": false
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Company active status",
+            "example": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T00:00:00.000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "message": "Bad Request"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized - invalid or missing token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "message": "Invalid credentials"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "message": "Data not found"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "message": "Email already exists"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "message": "Internal server error"
+            }
+          }
+        }
+      },
+      "UnprocessableEntity": {
+        "description": "Validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "message": "Validation error",
+              "errors": {
+                "email": ["The email field is required."],
+                "password": ["The password field is required."]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
