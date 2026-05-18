@@ -3,8 +3,10 @@ import {
   getUserById,
   createUser,
 } from "../../services/user/userServices.js";
+
 import { Request, Response } from "express";
 import { success, error } from "../../utils/response.js";
+
 
 export async function getAll(req: Request, res: Response) {
   try {
@@ -26,7 +28,7 @@ export async function getById(req: Request, res: Response) {
 
 export async function create(req: Request, res: Response) {
   try {
-    req.accepts(["application/json", "text/json", "*/*"])
+    req.accepts(["application/json", "text/json", "*/*"]);
     const { email, password, role } = req.body;
 
     if (!email || !password || !role) {
