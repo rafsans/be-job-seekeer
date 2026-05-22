@@ -7,6 +7,19 @@ import {
 } from "../../services/recruiter/companyServices.js";
 import { AuthRequest } from "../../middleware/authMiddleware.js";
 
+export async function getOnboardingHandler(req: AuthRequest, res: Response){
+  try{
+    const userId = req.user?.userId;
+    if (!userId) return error(401, res, "Unauthorized");
+
+    const result = await getCompanyByUserId(userId);
+    if (!result) return error(404, res, "Company profile not found");
+    return success(200, res, result, "Company profile fetched successfully");
+  }catch(e: any){
+    return error(500, res, "Internal server error");
+  }
+}
+
 export async function onboardingHandler(req: AuthRequest, res: Response) {
   try {
     const userId = req.user?.userId;

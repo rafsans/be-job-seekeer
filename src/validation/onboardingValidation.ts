@@ -12,29 +12,38 @@ export const onboardingSchema = z.object({
     postalCode: z.string().min(1, "Postal code is required"),
     resume_url: z.string().url().optional(),
   }),
-  education: z.array(
-    z.object({
-      institution: z.string().min(1, "Institution is required"),
-      degree: z.string().min(1, "Degree is required"),
-      field_of_study: z.string().min(1, "Field of study is required"),
-      start_date: z.string().min(1, "Start date is required"),
-      end_date: z.string().min(1, "End date is required"),
-      is_current: z.boolean(),
-      grade: z.union([z.string(), z.number()]),
-      description: z.string().min(1, "Description is required"),
-    })
-  ).optional(),
-  experience: z.array(
-    z.object({
-      company: z.string().min(1, "Company is required"),
-      position: z.string().min(1, "Position is required"),
-      employment_type: z.enum(["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN"]),
-      location_type: z.enum(["REMOTE", "HYBRID", "ON_SITE"]),
-      location: z.string().min(1, "Location is required"),
-      start_date: z.string().min(1, "Start date is required"),
-      end_date: z.string().min(1, "End date is required"),
-      is_current: z.boolean(),
-      description: z.string().min(1, "Description is required"),
-    })
-  ).optional(),
+  education: z
+    .array(
+      z.object({
+        institution: z.string().min(1, "Institution is required"),
+        degree: z.string().min(1, "Degree is required"),
+        field_of_study: z.string().min(1, "Field of study is required"),
+        start_date: z.string().min(1, "Start date is required"),
+        end_date: z.string().min(1, "End date is required"),
+        is_current: z.boolean(),
+        grade: z.union([z.string(), z.number()]),
+        description: z.string().min(1, "Description is required"),
+      }),
+    )
+    .min(1, "At least one education is required"),
+  experiences: z
+    .array(
+      z.object({
+        company: z.string().min(1, "Company is required"),
+        position: z.string().min(1, "Position is required"),
+        employment_type: z.enum([
+          "FULL_TIME",
+          "PART_TIME",
+          "CONTRACT",
+          "INTERN",
+        ]),
+        location_type: z.enum(["REMOTE", "HYBRID", "ON_SITE"]),
+        location: z.string().min(1, "Location is required"),
+        start_date: z.string().min(1, "Start date is required"),
+        end_date: z.string().min(1, "End date is required"),
+        is_current: z.boolean(),
+        description: z.string().min(1, "Description is required"),
+      }),
+    )
+    .optional(),
 });

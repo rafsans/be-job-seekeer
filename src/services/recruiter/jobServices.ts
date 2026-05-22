@@ -7,7 +7,7 @@ export async function getRecruiterJobs(userId: string) {
 
   if (!company) throw new Error("Company profile not found");
 
-  return await prisma.jobs.findMany({
+  return prisma.jobs.findMany({
     where: { companyId: company.id },
     include: {
       _count: {
@@ -24,7 +24,7 @@ export async function createJob(userId: string, data: any) {
 
   if (!company) throw new Error("Company profile not found");
 
-  return await prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx) => {
     const job = await tx.jobs.create({
       data: {
         companyId: company.id,
@@ -65,7 +65,7 @@ export async function updateJob(jobId: number, userId: string, data: any) {
 
   if (!company) throw new Error("Company profile not found");
 
-  return await prisma.jobs.update({
+  return prisma.jobs.update({
     where: { id: jobId, companyId: company.id },
     data: {
       title: data.job_title,
@@ -93,7 +93,7 @@ export async function deleteJob(jobId: number, userId: string) {
 
   if (!company) throw new Error("Company profile not found");
 
-  return await prisma.jobs.delete({
+  return prisma.jobs.delete({
     where: { id: jobId, companyId: company.id },
   });
 }
@@ -111,12 +111,12 @@ export async function getJobApplications(jobId: number, userId: string) {
 
   if (!job) throw new Error("Job not found or access denied");
 
-  return await prisma.applications.findMany({
+  return prisma.applications.findMany({
     where: { jobId },
     include: {
       user: {
         include: {
-          user_details: true,
+          userDetails: true,
         },
       },
     },
@@ -140,7 +140,7 @@ export async function updateApplicationStatus(applicationId: number, status: any
     throw new Error("Application not found or access denied");
   }
 
-  return await prisma.applications.update({
+  return prisma.applications.update({
     where: { id: applicationId },
     data: {
       status,
@@ -179,7 +179,7 @@ export async function getAllRecruiterApplicants(userId: string, filters: any) {
       include: {
         user: {
           include: {
-            user_details: true,
+            userDetails: true,
           },
         },
         job: true,

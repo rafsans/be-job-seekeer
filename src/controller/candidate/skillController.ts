@@ -5,6 +5,7 @@ import {
   addSkillToCandidate,
   removeSkillFromCandidate,
   getAllSkills,
+  getCandidateSkillById,
 } from "../../services/candidate/skillServices.js";
 import { AuthRequest } from "../../middleware/authMiddleware.js";
 
@@ -14,7 +15,11 @@ export async function getCandidateSkillsHandler(req: AuthRequest, res: Response)
     if (!userId) return error(401, res, "Unauthorized");
 
     const result = await getCandidateSkills(userId);
-    return success(200, res, result, "Skills fetched successfully");
+    const response = result.map((item) => ({
+      id: item.id,
+      name: item.skill.name,
+    }));
+    return success(200, res, response, "Skills fetched successfully");
   } catch (e: any) {
     return error(500, res, "Internal server error");
   }
@@ -23,10 +28,19 @@ export async function getCandidateSkillsHandler(req: AuthRequest, res: Response)
 export async function addSkillHandler(req: AuthRequest, res: Response) {
   try {
     const userId = req.user?.userId;
-    const { skillId } = req.body;
     if (!userId) return error(401, res, "Unauthorized");
 
-    const result = await addSkillToCandidate(userId, skillId);
+    const skills = req.body.skills;
+
+    const data = []
+    for (const skill of skills) {
+      const findSkill = await getCandidateSkillById(userId, skill)
+      if (findSkill) return error(400, res, "Skill already added");
+      data.push(
+        skill,
+      )
+    }
+    const result = await addSkillToCandidate(userId, data);
     return success(201, res, result, "Skill added successfully");
   } catch (e: any) {
     if (e.code === "P2002") return error(409, res, "Skill already added");

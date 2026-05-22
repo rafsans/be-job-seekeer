@@ -43,11 +43,9 @@ export async function register({
   }
 
   const user = await createUser({ email, password, role } as any);
-  const token = generateToken({ userId: user.id, role: user.role });
 
   return {
     user: { id: user.id, email: user.email, role: user.role },
-    token,
   };
 }
 

@@ -1,7 +1,7 @@
 import prisma from "../../config/db.js";
 
 export async function createCompany(userId: string, data: any) {
-  return await prisma.companies.create({
+  return prisma.companies.create({
     data: {
       userId,
       name: data.name,
@@ -21,13 +21,13 @@ export async function createCompany(userId: string, data: any) {
 }
 
 export async function getCompanyByUserId(userId: string) {
-  return await prisma.companies.findUnique({
+  return prisma.companies.findUnique({
     where: { userId },
   });
 }
 
 export async function updateCompany(userId: string, data: any) {
-  return await prisma.companies.update({
+  return prisma.companies.update({
     where: { userId },
     data: {
       name: data.name,

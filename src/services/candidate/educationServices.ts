@@ -1,13 +1,13 @@
 import prisma from "../../config/db.js";
 
 export async function getEducations(userId: string) {
-  return await prisma.educations.findMany({
+  return prisma.educations.findMany({
     where: { userId },
   });
 }
 
 export async function createEducation(userId: string, data: any) {
-  return await prisma.educations.create({
+  return prisma.educations.create({
     data: {
       userId,
       institution: data.institution,
@@ -23,7 +23,7 @@ export async function createEducation(userId: string, data: any) {
 }
 
 export async function updateEducation(id: number, userId: string, data: any) {
-  return await prisma.educations.update({
+  return prisma.educations.update({
     where: { id, userId },
     data: {
       institution: data.institution,
@@ -39,7 +39,7 @@ export async function updateEducation(id: number, userId: string, data: any) {
 }
 
 export async function deleteEducation(id: number, userId: string) {
-  return await prisma.educations.delete({
+  return prisma.educations.delete({
     where: { id, userId },
   });
 }
