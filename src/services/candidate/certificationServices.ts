@@ -1,13 +1,13 @@
 import prisma from "../../config/db.js";
 
 export async function getCertifications(userId: string) {
-  return await prisma.certifications.findMany({
+  return prisma.certifications.findMany({
     where: { userId },
   });
 }
 
 export async function createCertification(userId: string, data: any) {
-  return await prisma.certifications.create({
+  return prisma.certifications.create({
     data: {
       userId,
       name: data.name,
@@ -22,7 +22,7 @@ export async function createCertification(userId: string, data: any) {
 }
 
 export async function updateCertification(id: number, userId: string, data: any) {
-  return await prisma.certifications.update({
+  return prisma.certifications.update({
     where: { id, userId },
     data: {
       name: data.name,
@@ -37,7 +37,7 @@ export async function updateCertification(id: number, userId: string, data: any)
 }
 
 export async function deleteCertification(id: number, userId: string) {
-  return await prisma.certifications.delete({
+  return prisma.certifications.delete({
     where: { id, userId },
   });
 }

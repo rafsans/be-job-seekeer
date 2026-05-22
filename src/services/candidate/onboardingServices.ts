@@ -1,3 +1,4 @@
+import { Educations } from "./../../generated/prisma/index.js";
 import prisma from "../../config/db.js";
 
 export interface OnboardingData {
@@ -35,14 +36,37 @@ export interface OnboardingData {
   }>;
 }
 
-export async function onboardingCandidate(userId: string, data: OnboardingData) {
-  return await prisma.$transaction(async (tx) => {
+export async function getOnboardingCandidate(userId: string) {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      isActive: true,
+      isVerified: true,
+      createdAt: true,
+      updatedAt: true,
+      userDetails: true,
+      educations: true,
+      experiences: true,
+    },
+  });
+}
+
+export async function onboardingCandidate(
+  userId: string,
+  data: OnboardingData,
+) {
+  return prisma.$transaction(async (tx) => {
     const existingDetails = await tx.userDetails.findUnique({
       where: { userId },
     });
 
     if (existingDetails) {
-      throw Object.assign(new Error("Onboarding already completed"), { code: "CONFLICT" });
+      throw Object.assign(new Error("Onboarding already completed"), {
+        code: "CONFLICT",
+      });
     }
 
     const userDetails = await tx.userDetails.create({
@@ -58,7 +82,6 @@ export async function onboardingCandidate(userId: string, data: OnboardingData) 
         postalCode: data.personal.postalCode,
         resumeUrl: data.personal.resume_url ?? null,
         bio: "",
-
       },
     });
 
@@ -85,16 +108,16 @@ export async function onboardingCandidate(userId: string, data: OnboardingData) 
           companyName: exp.company,
           position: exp.position,
           employmentType: exp.employment_type as any,
-          locationType: exp.location_type === "ON_SITE" ? "ONSITE" : (exp.location_type as any),
+          locationType:
+            exp.location_type === "ON_SITE"
+              ? "ONSITE"
+              : (exp.location_type as any),
           location: exp.location,
           startDate: new Date(exp.start_date),
           endDate: new Date(exp.end_date),
           isCurrent: exp.is_current,
           description: exp.description,
         })),
-
-
-
       });
     }
 

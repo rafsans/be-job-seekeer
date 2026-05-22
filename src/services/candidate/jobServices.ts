@@ -1,7 +1,7 @@
 import prisma from "../../config/db.js";
 
 export async function getAllJobs() {
-  return await prisma.jobs.findMany({
+  return prisma.jobs.findMany({
     where: { isActive: true },
     include: {
       jobSkills: {
@@ -14,7 +14,7 @@ export async function getAllJobs() {
 }
 
 export async function getJobById(id: number) {
-  return await prisma.jobs.findUnique({
+  return prisma.jobs.findUnique({
     where: { id },
     include: {
       jobSkills: {
@@ -29,7 +29,7 @@ export async function getJobById(id: number) {
 }
 
 export async function saveJob(userId: string, jobId: number) {
-  return await prisma.savedJobs.create({
+  return prisma.savedJobs.create({
     data: {
       userId,
       jobId,
@@ -38,13 +38,13 @@ export async function saveJob(userId: string, jobId: number) {
 }
 
 export async function unsaveJob(id: number, userId: string) {
-  return await prisma.savedJobs.delete({
+  return prisma.savedJobs.delete({
     where: { id, userId },
   });
 }
 
 export async function getSavedJobs(userId: string) {
-  return await prisma.savedJobs.findMany({
+  return prisma.savedJobs.findMany({
     where: { userId },
     include: {
       job: true,
@@ -53,7 +53,7 @@ export async function getSavedJobs(userId: string) {
 }
 
 export async function applyJob(userId: string, jobId: number, data: { coverLetter: string, resumeUrl: string }) {
-  return await prisma.applications.create({
+  return prisma.applications.create({
     data: {
       userId,
       jobId,
@@ -66,7 +66,7 @@ export async function applyJob(userId: string, jobId: number, data: { coverLette
 }
 
 export async function getApplications(userId: string) {
-  return await prisma.applications.findMany({
+  return prisma.applications.findMany({
     where: { userId },
     include: {
       job: true,

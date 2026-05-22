@@ -7,7 +7,7 @@ export async function getCandidateProfile(userId: string) {
       id: true,
       email: true,
       role: true,
-      user_details: true,
+      userDetails: true,
       educations: true,
       experiences: true,
       userSkills: {
@@ -25,7 +25,8 @@ export async function getCandidateProfile(userId: string) {
 
   const stats = {
     applied_jobs: user.applications.length,
-    interview_calls: user.applications.filter((a) => a.status === "INTERVIEW").length,
+    interview_calls: user.applications.filter((a) => a.status === "INTERVIEW")
+      .length,
     profile_views: 0,
     applicant_jobs: user.applications.length,
   };
@@ -37,42 +38,42 @@ export async function getCandidateProfile(userId: string) {
       email: user.email,
       role: user.role,
     },
-    profile: user.user_details ? {
-      personal: {
-        firstname: user.user_details.firstName,
-        lastname: user.user_details.lastName,
-        phone: user.user_details.phone,
-        address: user.user_details.address,
-        city: user.user_details.city,
-        province: user.user_details.province,
-        country: user.user_details.country,
-        postalCode: user.user_details.postalCode,
-        resume_url: user.user_details.resumeUrl,
-      },
-      education: user.educations.map((edu) => ({
-        institution: edu.institution,
-        degree: edu.degree,
-        field_of_study: edu.fieldOfStudy,
-        start_date: edu.startDate.toISOString().split("T")[0],
-        end_date: edu.endDate.toISOString().split("T")[0],
-        is_current: edu.isCurrent,
-        grade: edu.grade,
-        description: edu.description,
-      })),
-      experience: user.experiences.map((exp) => ({
-        company: exp.companyName,
-        position: exp.position,
-        employment_type: exp.employmentType,
-        location_type: exp.locationType,
-        location: exp.location,
-        start_date: exp.startDate.toISOString().split("T")[0],
-        end_date: exp.endDate.toISOString().split("T")[0],
-        is_current: exp.isCurrent,
-        description: exp.description,
-      })),
-
-
-    } : null,
+    profile: user.userDetails
+      ? {
+          personal: {
+            firstname: user.userDetails.firstName,
+            lastname: user.userDetails.lastName,
+            phone: user.userDetails.phone,
+            address: user.userDetails.address,
+            city: user.userDetails.city,
+            province: user.userDetails.province,
+            country: user.userDetails.country,
+            postalCode: user.userDetails.postalCode,
+            resume_url: user.userDetails.resumeUrl,
+          },
+          education: user.educations.map((edu) => ({
+            institution: edu.institution,
+            degree: edu.degree,
+            field_of_study: edu.fieldOfStudy,
+            start_date: edu.startDate.toISOString().split("T")[0],
+            end_date: edu.endDate.toISOString().split("T")[0],
+            is_current: edu.isCurrent,
+            grade: edu.grade,
+            description: edu.description,
+          })),
+          experience: user.experiences.map((exp) => ({
+            company: exp.companyName,
+            position: exp.position,
+            employment_type: exp.employmentType,
+            location_type: exp.locationType,
+            location: exp.location,
+            start_date: exp.startDate.toISOString().split("T")[0],
+            end_date: exp.endDate.toISOString().split("T")[0],
+            is_current: exp.isCurrent,
+            description: exp.description,
+          })),
+        }
+      : null,
   };
 }
 
@@ -101,5 +102,5 @@ export async function updateCandidateProfile(userId: string, data: any) {
     });
   }
 
-  return { message: "Profile updated successfully" };
+  return {};
 }

@@ -1,13 +1,13 @@
 import prisma from "../../config/db.js";
 
 export async function getExperiences(userId: string) {
-  return await prisma.experiences.findMany({
+  return prisma.experiences.findMany({
     where: { userId },
   });
 }
 
 export async function createExperience(userId: string, data: any) {
-  return await prisma.experiences.create({
+  return prisma.experiences.create({
     data: {
       userId,
       companyName: data.company,
@@ -24,7 +24,7 @@ export async function createExperience(userId: string, data: any) {
 }
 
 export async function updateExperience(id: number, userId: string, data: any) {
-  return await prisma.experiences.update({
+  return prisma.experiences.update({
     where: { id, userId },
     data: {
       companyName: data.company,
@@ -41,7 +41,7 @@ export async function updateExperience(id: number, userId: string, data: any) {
 }
 
 export async function deleteExperience(id: number, userId: string) {
-  return await prisma.experiences.delete({
+  return prisma.experiences.delete({
     where: { id, userId },
   });
 }
