@@ -26,15 +26,24 @@ interface AuthResult {
     id: string;
     email: string;
     role: Role;
+    isOnboarded: boolean;
   };
   token: string;
+}
+
+interface RegisterResult {
+  user: {
+    id: string;
+    email: string;
+    role: Role;
+  };
 }
 
 export async function register({
   email,
   password,
   role = "CANDIDATE",
-}: RegisterData): Promise<AuthResult> {
+}: RegisterData): Promise<RegisterResult> {
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
     throw Object.assign(new Error("Email already in use"), {
@@ -75,8 +84,21 @@ export async function login({
 
   const token = generateToken({ userId: user.id, role: user.role });
 
+  let isOnboarded = false;
+  if (user.role === "CANDIDATE") {
+    const details = await prisma.userDetails.findUnique({
+      where: { userId: user.id },
+    });
+    isOnboarded = !!details;
+  } else if (user.role === "RECRUITER") {
+    const company = await prisma.companies.findUnique({
+      where: { userId: user.id },
+    });
+    isOnboarded = !!company;
+  }
+
   return {
-    user: { id: user.id, email: user.email, role: user.role },
+    user: { id: user.id, email: user.email, role: user.role, isOnboarded },
     token,
   };
 }
