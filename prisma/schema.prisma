@@ -55,7 +55,6 @@ model UserDetails {
   postalCode      String?
   country         String?
   profilePhotoUrl String?
-  bio             String    @db.Text
   resumeUrl       String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt

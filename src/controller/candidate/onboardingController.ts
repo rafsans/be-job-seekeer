@@ -1,6 +1,14 @@
 import {Response} from "express";
 import {success, error} from "../../utils/response.js";
-import {getOnboardingCandidate, onboardingCandidate} from "../../services/candidate/onboardingServices.js";
+import {
+  getOnboardingCandidate,
+  onboardingCandidate,
+  savePersonalInfo,
+  saveEducationInfo,
+  saveExperienceInfo,
+  saveSkillsCertsInfo,
+  saveResumeInfo,
+} from "../../services/candidate/onboardingServices.js";
 import {AuthRequest} from "../../middleware/authMiddleware.js";
 
 export async function getOnboardingHanlder(req: AuthRequest, res: Response) {
@@ -29,4 +37,65 @@ export async function onboardingHandler(req: AuthRequest, res: Response) {
         if (e.code === "CONFLICT") return error(409, res, e.message);
         return error(500, res, e.message);
     }
+}
+
+export async function onboardingPersonalHandler(req: AuthRequest, res: Response) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) return error(401, res, "Unauthorized");
+
+    const result = await savePersonalInfo(userId, req.body);
+    return success(200, res, result, "Personal information saved successfully");
+  } catch (e: any) {
+    return error(500, res, e.message);
+  }
+}
+
+export async function onboardingEducationHandler(req: AuthRequest, res: Response) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) return error(401, res, "Unauthorized");
+
+    const result = await saveEducationInfo(userId, req.body.education);
+    return success(200, res, result, "Education saved successfully");
+  } catch (e: any) {
+    return error(500, res, e.message);
+  }
+}
+
+export async function onboardingExperienceHandler(req: AuthRequest, res: Response) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) return error(401, res, "Unauthorized");
+
+    const result = await saveExperienceInfo(userId, req.body.experience);
+    return success(200, res, result, "Experience saved successfully");
+  } catch (e: any) {
+    return error(500, res, e.message);
+  }
+}
+
+export async function onboardingSkillsCertsHandler(req: AuthRequest, res: Response) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) return error(401, res, "Unauthorized");
+
+    const { skills, certifications } = req.body;
+    const result = await saveSkillsCertsInfo(userId, skills, certifications);
+    return success(200, res, result, "Skills & certifications saved successfully");
+  } catch (e: any) {
+    return error(500, res, e.message);
+  }
+}
+
+export async function onboardingResumeHandler(req: AuthRequest, res: Response) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) return error(401, res, "Unauthorized");
+
+    const result = await saveResumeInfo(userId, req.body.resumeUrl);
+    return success(200, res, result, "Resume url saved successfully");
+  } catch (e: any) {
+    return error(500, res, e.message);
+  }
 }

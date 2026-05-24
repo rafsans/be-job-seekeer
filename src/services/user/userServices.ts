@@ -100,7 +100,6 @@ export async function createUserDetails({
   postalCode,
   country,
   profilePhotoUrl,
-  bio,
   resumeUrl,
 }: {
   userId: string;
@@ -115,7 +114,6 @@ export async function createUserDetails({
   postalCode: string;
   country: string;
   profilePhotoUrl: string;
-  bio: string;
   resumeUrl: string;
 }) {
   const userDetails = await prisma.userDetails.create({
@@ -132,7 +130,6 @@ export async function createUserDetails({
       postalCode: postalCode,
       country: country,
       profilePhotoUrl: profilePhotoUrl,
-      bio: bio,
       resumeUrl: resumeUrl,
     },
   });
@@ -152,7 +149,6 @@ export async function updateUserDetails({
   postalCode,
   country,
   profilePhotoUrl,
-  bio,
   resumeUrl,
 }: {
   id: number;
@@ -167,7 +163,6 @@ export async function updateUserDetails({
   postalCode: string;
   country: string;
   profilePhotoUrl: string;
-  bio: string;
   resumeUrl: string;
 }) {
   const userDetails = await prisma.userDetails.update({
@@ -186,7 +181,6 @@ export async function updateUserDetails({
       postalCode: postalCode,
       country: country,
       profilePhotoUrl: profilePhotoUrl,
-      bio: bio,
       resumeUrl: resumeUrl,
     },
   });
