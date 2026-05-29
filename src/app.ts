@@ -15,6 +15,7 @@ import certificationRoutes from "./routes/candidate/certificationRoutes.js";
 import recruiterCompanyRoutes from "./routes/recruiter/companyRoutes.js";
 import recruiterJobRoutes from "./routes/recruiter/jobRoutes.js";
 import recruiterApplicantRoutes from "./routes/recruiter/applicantRoutes.js";
+import categoryRoutes from "./routes/master/categoryRoutes.js";
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use("/api/v1/jobs", jobRoutes);
 app.use("/api/v1/recruiter", recruiterCompanyRoutes);
 app.use("/api/v1/recruiter/jobs", recruiterJobRoutes);
 app.use("/api/v1/recruiter/applicants", recruiterApplicantRoutes);
+app.use("/api/v1/master/categories", categoryRoutes);
 
 app.use(
   "/api-docs",

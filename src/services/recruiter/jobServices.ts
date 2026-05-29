@@ -13,6 +13,9 @@ export async function getRecruiterJobs(userId: string) {
       _count: {
         select: { applications: true },
       },
+      category: true,
+      requirements: true,
+      responsibilities: true,
     },
   });
 }
@@ -30,8 +33,6 @@ export async function createJob(userId: string, data: any) {
         companyId: company.id,
         title: data.job_title,
         description: data.description,
-        requirements: data.requirements,
-        responsibilities: data.responsibilities,
         benefits: data.benefits,
         employmentType: data.employment_type,
         locationType: data.location_type,
@@ -41,9 +42,28 @@ export async function createJob(userId: string, data: any) {
         currency: data.currency,
         experienceLevel: data.experience_level,
         educationLevel: data.education_level,
+        categoryId: data.category_id,
         deadLine: new Date(data.deadline),
       },
     });
+
+    if (data.requirements && data.requirements.length > 0) {
+      await tx.jobRequirements.createMany({
+        data: data.requirements.map((item: string) => ({
+          jobId: job.id,
+          item,
+        })),
+      });
+    }
+
+    if (data.responsibilities && data.responsibilities.length > 0) {
+      await tx.jobResponsibilities.createMany({
+        data: data.responsibilities.map((item: string) => ({
+          jobId: job.id,
+          item,
+        })),
+      });
+    }
 
     if (data.skills && data.skills.length > 0) {
       await tx.jobSkills.createMany({
@@ -54,7 +74,15 @@ export async function createJob(userId: string, data: any) {
       });
     }
 
-    return job;
+    return tx.jobs.findUnique({
+      where: { id: job.id },
+      include: {
+        requirements: true,
+        responsibilities: true,
+        jobSkills: { include: { skill: true } },
+        category: true,
+      },
+    });
   });
 }
 
@@ -65,24 +93,53 @@ export async function updateJob(jobId: number, userId: string, data: any) {
 
   if (!company) throw new Error("Company profile not found");
 
-  return prisma.jobs.update({
-    where: { id: jobId, companyId: company.id },
-    data: {
-      title: data.job_title,
-      description: data.description,
-      requirements: data.requirements,
-      responsibilities: data.responsibilities,
-      benefits: data.benefits,
-      employmentType: data.employment_type,
-      locationType: data.location_type,
-      location: data.location,
-      salaryMin: data.min_salary,
-      salaryMax: data.max_salary,
-      currency: data.currency,
-      experienceLevel: data.experience_level,
-      educationLevel: data.education_level,
-      deadLine: new Date(data.deadline),
-    },
+  return prisma.$transaction(async (tx) => {
+    const job = await tx.jobs.update({
+      where: { id: jobId, companyId: company.id },
+      data: {
+        title: data.job_title,
+        description: data.description,
+        benefits: data.benefits,
+        employmentType: data.employment_type,
+        locationType: data.location_type,
+        location: data.location,
+        salaryMin: data.min_salary,
+        salaryMax: data.max_salary,
+        currency: data.currency,
+        experienceLevel: data.experience_level,
+        educationLevel: data.education_level,
+        categoryId: data.category_id,
+        deadLine: new Date(data.deadline),
+      },
+    });
+
+    if (data.requirements !== undefined) {
+      await tx.jobRequirements.deleteMany({ where: { jobId } });
+      if (data.requirements.length > 0) {
+        await tx.jobRequirements.createMany({
+          data: data.requirements.map((item: string) => ({ jobId, item })),
+        });
+      }
+    }
+
+    if (data.responsibilities !== undefined) {
+      await tx.jobResponsibilities.deleteMany({ where: { jobId } });
+      if (data.responsibilities.length > 0) {
+        await tx.jobResponsibilities.createMany({
+          data: data.responsibilities.map((item: string) => ({ jobId, item })),
+        });
+      }
+    }
+
+    return tx.jobs.findUnique({
+      where: { id: job.id },
+      include: {
+        requirements: true,
+        responsibilities: true,
+        jobSkills: { include: { skill: true } },
+        category: true,
+      },
+    });
   });
 }
 
@@ -182,7 +239,11 @@ export async function getAllRecruiterApplicants(userId: string, filters: any) {
             userDetails: true,
           },
         },
-        job: true,
+        job: {
+          include: {
+            category: true,
+          },
+        },
       },
       skip,
       take: Number(limit),

@@ -18,8 +18,8 @@ export const companyOnboardingSchema = z.object({
 export const postJobSchema = z.object({
   job_title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
-  requirements: z.string().min(1, "Requirements are required"),
-  responsibilities: z.string().min(1, "Responsibilities are required"),
+  requirements: z.array(z.string().min(1)).min(1, "At least one requirement is required"),
+  responsibilities: z.array(z.string().min(1)).min(1, "At least one responsibility is required"),
   benefits: z.string().min(1, "Benefits are required"),
   employment_type: z.enum(["FULL_TIME", "PART_TIME", "CONTRACT", "TEMPORARY", "INTERN", "OTHER"]),
   location_type: z.enum(["ONSITE", "REMOTE", "HYBRID"]),
@@ -30,7 +30,27 @@ export const postJobSchema = z.object({
   experience_level: z.string().min(1, "Experience level is required"),
   education_level: z.string().min(1, "Education level is required"),
   deadline: z.string().min(1, "Deadline is required"),
-  skills: z.array(z.number()).optional(), // Array of skill IDs
+  skills: z.array(z.number()).optional(),
+  category_id: z.number().optional(),
+});
+
+export const updateJobSchema = z.object({
+  job_title: z.string().min(1, "Title is required").optional(),
+  description: z.string().min(1, "Description is required").optional(),
+  requirements: z.array(z.string().min(1)).min(1).optional(),
+  responsibilities: z.array(z.string().min(1)).min(1).optional(),
+  benefits: z.string().min(1, "Benefits are required").optional(),
+  employment_type: z.enum(["FULL_TIME", "PART_TIME", "CONTRACT", "TEMPORARY", "INTERN", "OTHER"]).optional(),
+  location_type: z.enum(["ONSITE", "REMOTE", "HYBRID"]).optional(),
+  location: z.string().min(1, "Location is required").optional(),
+  min_salary: z.number().min(0).optional(),
+  max_salary: z.number().min(0).optional(),
+  currency: z.string().min(1, "Currency is required").optional(),
+  experience_level: z.string().min(1, "Experience level is required").optional(),
+  education_level: z.string().min(1, "Education level is required").optional(),
+  deadline: z.string().min(1, "Deadline is required").optional(),
+  skills: z.array(z.number()).optional(),
+  category_id: z.number().optional(),
 });
 
 export const acceptRejectSchema = z.object({

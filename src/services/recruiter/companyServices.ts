@@ -26,6 +26,22 @@ export async function getCompanyByUserId(userId: string) {
   });
 }
 
+export async function getCompanyById(companyId: string) {
+  return prisma.companies.findUnique({
+    where: { id: companyId },
+    include: {
+      jobs: {
+        where: { isActive: true },
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+        include: {
+          category: true,
+        },
+      },
+    },
+  });
+}
+
 export async function updateCompany(userId: string, data: any) {
   return prisma.companies.update({
     where: { userId },

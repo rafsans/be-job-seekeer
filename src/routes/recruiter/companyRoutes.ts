@@ -3,7 +3,8 @@ import {
   onboardingHandler,
   getProfileHandler,
   updateProfileHandler,
-  getOnboardingHandler
+  getOnboardingHandler,
+  getPublicCompanyHandler,
 } from "../../controller/recruiter/companyController.js";
 import { authenticate } from "../../middleware/authMiddleware.js";
 import { validate } from "../../middleware/validationMiddleware.js";
@@ -18,5 +19,8 @@ router.put("/profile", authenticate, validate(companyOnboardingSchema), updatePr
 
 router.get("/company-information", authenticate, getProfileHandler as any);
 router.put("/company-information", authenticate, validate(companyOnboardingSchema), updateProfileHandler as any);
+
+// Public: view any company by ID
+router.get("/company/:id", getPublicCompanyHandler as any);
 
 export default router;

@@ -9,6 +9,10 @@ export async function getAllJobs() {
           skill: true,
         },
       },
+      company: true,
+      category: true,
+      requirements: true,
+      responsibilities: true,
     },
   });
 }
@@ -23,8 +27,10 @@ export async function getJobById(id: number) {
         },
       },
       company: true,
+      category: true,
+      requirements: true,
+      responsibilities: true,
     },
-
   });
 }
 
@@ -47,7 +53,12 @@ export async function getSavedJobs(userId: string) {
   return prisma.savedJobs.findMany({
     where: { userId },
     include: {
-      job: true,
+      job: {
+        include: {
+          company: true,
+          category: true,
+        },
+      },
     },
   });
 }
@@ -69,7 +80,12 @@ export async function getApplications(userId: string) {
   return prisma.applications.findMany({
     where: { userId },
     include: {
-      job: true,
+      job: {
+        include: {
+          company: true,
+          category: true,
+        },
+      },
     },
   });
 }

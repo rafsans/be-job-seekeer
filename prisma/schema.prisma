@@ -195,8 +195,6 @@ model Jobs {
   companyId        String
   title            String
   description      String         @db.Text
-  requirements     String         @db.Text
-  responsibilities String         @db.Text
   benefits         String         @db.Text
   employmentType   EmploymentType
   locationType     LocationType
@@ -211,13 +209,40 @@ model Jobs {
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   company          Companies      @relation(fields: [companyId], references: [id])
+  categoryId       Int?
+  category         JobCategory?   @relation(fields: [categoryId], references: [id])
 
-
-  jobSkills    JobSkills[]
-  applications Applications[]
-  savedJobs    SavedJobs[]
+  jobSkills        JobSkills[]
+  applications     Applications[]
+  savedJobs        SavedJobs[]
+  requirements     JobRequirements[]
+  responsibilities JobResponsibilities[]
 
   @@map("jobs")
+}
+
+model JobRequirements {
+  id        Int      @id @default(autoincrement())
+  jobId     Int
+  item      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  job Jobs @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@map("job_requirements")
+}
+
+model JobResponsibilities {
+  id        Int      @id @default(autoincrement())
+  jobId     Int
+  item      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  job Jobs @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@map("job_responsibilities")
 }
 
 model JobSkills {
@@ -272,4 +297,15 @@ model SavedJobs {
   job  Jobs @relation(fields: [jobId], references: [id])
 
   @@map("saved_jobs")
+}
+
+model JobCategory {
+  id        Int      @id @default(autoincrement())
+  name      String
+  title     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  jobs      Jobs[]
+
+  @@map("job_categories")
 }
