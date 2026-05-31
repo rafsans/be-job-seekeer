@@ -1,0 +1,92 @@
+import bcrypt from "bcryptjs";
+import { generateToken } from "../../utils/jwt.js";
+import { getUserByEmail, getUserById, createUser, } from "../user/userServices.js";
+import prisma from "../../config/db.js";
+export async function register({ email, password, role = "CANDIDATE", }) {
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+        throw Object.assign(new Error("Email already in use"), {
+            code: "CONFLICT",
+        });
+    }
+    const user = await createUser({ email, password, role });
+    return {
+        user: { id: user.id, email: user.email, role: user.role },
+    };
+}
+export async function login({ email, password, }) {
+    const user = await getUserByEmail(email);
+    if (!user) {
+        throw Object.assign(new Error("Invalid credentials"), {
+            code: "UNAUTHORIZED",
+        });
+    }
+    if (!user.isActive) {
+        throw Object.assign(new Error("Account is deactivated"), {
+            code: "UNAUTHORIZED",
+        });
+    }
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+        throw Object.assign(new Error("Invalid credentials"), {
+            code: "UNAUTHORIZED",
+        });
+    }
+    const token = generateToken({ userId: user.id, role: user.role });
+    let isOnboarded = false;
+    if (user.role === "CANDIDATE") {
+        const details = await prisma.userDetails.findUnique({
+            where: { userId: user.id },
+        });
+        isOnboarded = !!details;
+    }
+    else if (user.role === "RECRUITER") {
+        const company = await prisma.companies.findUnique({
+            where: { userId: user.id },
+        });
+        isOnboarded = !!company;
+    }
+    return {
+        user: { id: user.id, email: user.email, role: user.role, isOnboarded },
+        token,
+    };
+}
+export async function changeEmail(userId, newEmail, currentPassword) {
+    const user = await getUserById(userId);
+    if (!user) {
+        throw Object.assign(new Error("User not found"), { code: "NOT_FOUND" });
+    }
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+        throw Object.assign(new Error("Current password is incorrect"), {
+            code: "UNAUTHORIZED",
+        });
+    }
+    const existing = await getUserByEmail(newEmail);
+    if (existing) {
+        throw Object.assign(new Error("Email already in use"), {
+            code: "CONFLICT",
+        });
+    }
+    await prisma.user.update({
+        where: { id: userId },
+        data: { email: newEmail },
+    });
+}
+export async function changePassword(userId, currentPassword, newPassword) {
+    const user = await getUserById(userId);
+    if (!user) {
+        throw Object.assign(new Error("User not found"), { code: "NOT_FOUND" });
+    }
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+        throw Object.assign(new Error("Current password is incorrect"), {
+            code: "UNAUTHORIZED",
+        });
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+        where: { id: userId },
+        data: { password: hashedPassword },
+    });
+}

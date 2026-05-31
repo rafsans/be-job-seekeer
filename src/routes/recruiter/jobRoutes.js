@@ -1,0 +1,13 @@
+import { Router } from "express";
+import { getRecruiterJobsHandler, createJobHandler, updateJobHandler, deleteJobHandler, getApplicationsHandler, updateStatusHandler, } from "../../controller/recruiter/jobController.js";
+import { authenticate } from "../../middleware/authMiddleware.js";
+import { validate } from "../../middleware/validationMiddleware.js";
+import { postJobSchema, acceptRejectSchema } from "../../validation/recruiterValidation.js";
+const router = Router();
+router.get("/", authenticate, getRecruiterJobsHandler);
+router.post("/", authenticate, validate(postJobSchema), createJobHandler);
+router.put("/:id", authenticate, validate(postJobSchema), updateJobHandler);
+router.delete("/:id", authenticate, deleteJobHandler);
+router.get("/:id/applications", authenticate, getApplicationsHandler);
+router.patch("/:id/status", authenticate, validate(acceptRejectSchema), updateStatusHandler);
+export default router;
