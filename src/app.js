@@ -22,6 +22,10 @@ app.use(cors({
     credentials: true,
 }));
 app.use(express.json());
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+});
 app.use("/uploads", express.static("uploads"));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
@@ -41,4 +45,17 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customCss: ".swagger-ui .topbar { display: none }",
     customSiteTitle: "Job Portal API Docs",
 }));
+// Global Error Handler Middleware
+app.use((err, req, res, next) => {
+    console.error(`[${new Date().toISOString()}] ❌ 500 Internal Server Error`);
+    console.error(`Endpoint: ${req.method} ${req.url}`);
+    console.error(err.stack);
+    
+    res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        error: process.env.NODE_ENV === "development" ? err.message : undefined
+    });
+});
+
 export default app;
