@@ -1,0 +1,11 @@
+import { Router } from "express";
+import { getExperiencesHandler, createExperienceHandler, updateExperienceHandler, deleteExperienceHandler, } from "../../controller/candidate/experienceController.js";
+import { authenticate } from "../../middleware/authMiddleware.js";
+import { validate } from "../../middleware/validationMiddleware.js";
+import { experienceSchema } from "../../validation/experienceValidation.js";
+const router = Router();
+router.get("/", authenticate, getExperiencesHandler);
+router.post("/", authenticate, validate(experienceSchema), createExperienceHandler);
+router.put("/:id", authenticate, validate(experienceSchema), updateExperienceHandler);
+router.delete("/:id", authenticate, deleteExperienceHandler);
+export default router;

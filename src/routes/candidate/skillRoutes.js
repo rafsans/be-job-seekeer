@@ -1,0 +1,11 @@
+import { Router } from "express";
+import { getCandidateSkillsHandler, addSkillHandler, removeSkillHandler, getAllSkillsHandler, } from "../../controller/candidate/skillController.js";
+import { authenticate } from "../../middleware/authMiddleware.js";
+import { validate } from "../../middleware/validationMiddleware.js";
+import { addSkillSchema } from "../../validation/skillValidation.js";
+const router = Router();
+router.get("/", authenticate, getCandidateSkillsHandler);
+router.post("/", authenticate, validate(addSkillSchema), addSkillHandler);
+router.delete("/:id", authenticate, removeSkillHandler);
+router.get("/master", getAllSkillsHandler);
+export default router;

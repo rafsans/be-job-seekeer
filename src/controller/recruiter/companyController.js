@@ -1,0 +1,68 @@
+import { success, error } from "../../utils/response.js";
+import { createCompany, getCompanyByUserId, getCompanyById, updateCompany, } from "../../services/recruiter/companyServices.js";
+export async function getOnboardingHandler(req, res) {
+    try {
+        const userId = req.user?.userId;
+        if (!userId)
+            return error(401, res, "Unauthorized");
+        const result = await getCompanyByUserId(userId);
+        if (!result)
+            return error(404, res, "Company profile not found");
+        return success(200, res, result, "Company profile fetched successfully");
+    }
+    catch (e) {
+        return error(500, res, "Internal server error");
+    }
+}
+export async function onboardingHandler(req, res) {
+    try {
+        const userId = req.user?.userId;
+        if (!userId)
+            return error(401, res, "Unauthorized");
+        const result = await createCompany(userId, req.body);
+        return success(201, res, result, "Company onboarding completed successfully");
+    }
+    catch (e) {
+        if (e.code === "P2002")
+            return error(409, res, "Company profile already exists");
+        return error(500, res, "Internal server error");
+    }
+}
+export async function getProfileHandler(req, res) {
+    try {
+        const userId = req.user?.userId;
+        if (!userId)
+            return error(401, res, "Unauthorized");
+        const result = await getCompanyByUserId(userId);
+        if (!result)
+            return error(404, res, "Company profile not found");
+        return success(200, res, result, "Company profile fetched successfully");
+    }
+    catch (e) {
+        return error(500, res, "Internal server error");
+    }
+}
+export async function updateProfileHandler(req, res) {
+    try {
+        const userId = req.user?.userId;
+        if (!userId)
+            return error(401, res, "Unauthorized");
+        const result = await updateCompany(userId, req.body);
+        return success(200, res, result, "Company profile updated successfully");
+    }
+    catch (e) {
+        return error(500, res, "Internal server error");
+    }
+}
+export async function getPublicCompanyHandler(req, res) {
+    try {
+        const { id } = req.params;
+        const result = await getCompanyById(id);
+        if (!result)
+            return error(404, res, "Company not found");
+        return success(200, res, result, "Company fetched successfully");
+    }
+    catch (e) {
+        return error(500, res, "Internal server error");
+    }
+}

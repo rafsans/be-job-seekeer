@@ -1,0 +1,62 @@
+[
+  {
+    "email": "recruiter1@example.com",
+    "role": "RECRUITER",
+    "firstName": "Eko",
+    "lastName": "Doe"
+  },
+  {
+    "email": "recruiter2@example.com",
+    "role": "RECRUITER",
+    "firstName": "Siti",
+    "lastName": "Putra"
+  },
+  {
+    "email": "recruiter3@example.com",
+    "role": "RECRUITER",
+    "firstName": "Alice",
+    "lastName": "Smith"
+  },
+  {
+    "email": "recruiter4@example.com",
+    "role": "RECRUITER",
+    "firstName": "Dewi",
+    "lastName": "Williams"
+  },
+  {
+    "email": "recruiter5@example.com",
+    "role": "RECRUITER",
+    "firstName": "Dewi",
+    "lastName": "Williams"
+  },
+  {
+    "email": "seeker1@example.com",
+    "role": "CANDIDATE",
+    "firstName": "Dewi",
+    "lastName": "Wijaya"
+  },
+  {
+    "email": "seeker2@example.com",
+    "role": "CANDIDATE",
+    "firstName": "Agus",
+    "lastName": "Brown"
+  },
+  {
+    "email": "seeker3@example.com",
+    "role": "CANDIDATE",
+    "firstName": "Budi",
+    "lastName": "Johnson"
+  },
+  {
+    "email": "seeker4@example.com",
+    "role": "CANDIDATE",
+    "firstName": "Jane",
+    "lastName": "Putra"
+  },
+  {
+    "email": "seeker5@example.com",
+    "role": "CANDIDATE",
+    "firstName": "Jane",
+    "lastName": "Smith"
+  }
+]

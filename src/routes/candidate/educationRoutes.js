@@ -1,0 +1,11 @@
+import { Router } from "express";
+import { getEducationsHandler, createEducationHandler, updateEducationHandler, deleteEducationHandler, } from "../../controller/candidate/educationController.js";
+import { authenticate } from "../../middleware/authMiddleware.js";
+import { validate } from "../../middleware/validationMiddleware.js";
+import { educationSchema } from "../../validation/educationValidation.js";
+const router = Router();
+router.get("/", authenticate, getEducationsHandler);
+router.post("/", authenticate, validate(educationSchema), createEducationHandler);
+router.put("/:id", authenticate, validate(educationSchema), updateEducationHandler);
+router.delete("/:id", authenticate, deleteEducationHandler);
+export default router;
