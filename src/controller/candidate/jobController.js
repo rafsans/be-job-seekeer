@@ -1,5 +1,5 @@
 import { success, error } from "../../utils/response.js";
-import { getAllJobs, getJobById, saveJob, unsaveJob, getSavedJobs, applyJob, getApplications, } from "../../services/candidate/jobServices.js";
+import { getAllJobs, getJobById, saveJob, unsaveJob, getSavedJobs, applyJob, getApplications, getRecommendedJobs } from "../../services/candidate/jobServices.js";
 export async function getAllJobsHandler(req, res) {
     try {
         const result = await getAllJobs();
@@ -83,6 +83,20 @@ export async function getApplicationsHandler(req, res) {
         return success(200, res, result, "Applications fetched successfully");
     }
     catch (e) {
+        return error(500, res, "Internal server error");
+    }
+}
+
+export async function getRecommendedJobsHandler(req, res) {
+    try {
+        const userId = req.user?.userId;
+        if (!userId)
+            return error(401, res, "Unauthorized");
+        const result = await getRecommendedJobs(userId);
+        return success(200, res, result, "Recommended jobs fetched successfully");
+    }
+    catch (e) {
+        console.error("Error fetching recommended jobs:", e);
         return error(500, res, "Internal server error");
     }
 }
