@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllJobsHandler, getJobByIdHandler, saveJobHandler, unsaveJobHandler, getSavedJobsHandler, applyJobHandler, getApplicationsHandler, } from "../../controller/candidate/jobController.js";
+import { getAllJobsHandler, getJobByIdHandler, saveJobHandler, unsaveJobHandler, getSavedJobsHandler, applyJobHandler, getApplicationsHandler, getRecommendedJobsHandler } from "../../controller/candidate/jobController.js";
 import { authenticate } from "../../middleware/authMiddleware.js";
 const router = Router();
 router.get("/", getAllJobsHandler);
@@ -7,6 +7,7 @@ router.get("/detail/:id", getJobByIdHandler);
 router.post("/save", authenticate, saveJobHandler);
 router.delete("/save/:id", authenticate, unsaveJobHandler);
 router.get("/saved", authenticate, getSavedJobsHandler);
+router.get("/recommended", authenticate, getRecommendedJobsHandler);
 router.post("/apply", authenticate, applyJobHandler);
 router.get("/applications", authenticate, getApplicationsHandler);
 export default router;

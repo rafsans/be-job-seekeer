@@ -84,3 +84,39 @@ export async function getApplications(userId) {
         },
     });
 }
+
+export async function getRecommendedJobs(userId) {
+    const userCategories = await prisma.userTopCategories.findUnique({
+        where: { userId },
+    });
+
+    if (!userCategories) return [];
+
+    const categories = [userCategories.category1, userCategories.category2, userCategories.category3].filter(Boolean);
+
+    if (categories.length === 0) return [];
+
+    return prisma.jobs.findMany({
+        where: {
+            isActive: true,
+            category: {
+                OR: [
+                    { name: { in: categories } },
+                    { title: { in: categories } }
+                ]
+            }
+        },
+        include: {
+            jobSkills: {
+                include: {
+                    skill: true,
+                },
+            },
+            company: true,
+            category: true,
+            requirements: true,
+            responsibilities: true,
+            benefits: true,
+        },
+    });
+}

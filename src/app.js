@@ -18,7 +18,7 @@ import recruiterApplicantRoutes from "./routes/recruiter/applicantRoutes.js";
 import categoryRoutes from "./routes/master/categoryRoutes.js";
 const app = express();
 app.use(cors({
-    origin: ["https://fe-seeker.netlify.app","https://job-seeker-frontend-rjexg3nf2-rafsanbro12gmailcoms-projects.vercel.app"],
+    origin: true,
     credentials: true,
 }));
 app.use(express.json());
