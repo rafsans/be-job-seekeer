@@ -90,3 +90,70 @@ export async function changePassword(userId, currentPassword, newPassword) {
         data: { password: hashedPassword },
     });
 }
+
+// Compute euclidean distance between two 128-d descriptors
+function euclideanDistance(desc1, desc2) {
+    if (!desc1 || !desc2 || desc1.length !== desc2.length) return Infinity;
+    return Math.sqrt(desc1.reduce((sum, val, i) => sum + Math.pow(val - desc2[i], 2), 0));
+}
+
+export async function registerFace(userId, faceDescriptor) {
+    const user = await getUserById(userId);
+    if (!user) {
+        throw Object.assign(new Error("User not found"), { code: "NOT_FOUND" });
+    }
+    
+    await prisma.userBiometrics.upsert({
+        where: { userId },
+        update: { faceDescriptor },
+        create: { userId, faceDescriptor }
+    });
+}
+
+export async function loginWithFace(faceDescriptor) {
+    const allBiometrics = await prisma.userBiometrics.findMany({
+        include: { user: true }
+    });
+    
+    let bestMatch = null;
+    let minDistance = Infinity;
+    
+    for (const record of allBiometrics) {
+        const storedDescriptor = record.faceDescriptor;
+        const distance = euclideanDistance(faceDescriptor, storedDescriptor);
+        if (distance < minDistance) {
+            minDistance = distance;
+            bestMatch = record;
+        }
+    }
+    
+    // threshold commonly used for face-api.js is 0.6
+    if (bestMatch && minDistance < 0.6) {
+        const user = bestMatch.user;
+        if (!user.isActive) {
+            throw Object.assign(new Error("Account is deactivated"), { code: "UNAUTHORIZED" });
+        }
+        
+        const token = generateToken({ userId: user.id, role: user.role });
+        let isOnboarded = false;
+        if (user.role === "CANDIDATE") {
+            const details = await prisma.userDetails.findUnique({
+                where: { userId: user.id },
+            });
+            isOnboarded = !!details;
+        } else if (user.role === "RECRUITER") {
+            const company = await prisma.companies.findUnique({
+                where: { userId: user.id },
+            });
+            isOnboarded = !!company;
+        }
+        
+        return {
+            user: { id: user.id, email: user.email, role: user.role, isOnboarded },
+            token,
+            distance: minDistance
+        };
+    }
+    
+    throw Object.assign(new Error("Face not recognized"), { code: "UNAUTHORIZED" });
+}

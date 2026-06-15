@@ -4,6 +4,8 @@ import {
   login,
   changeEmail,
   changePassword,
+  registerFace,
+  loginWithFace,
 } from "../services/auth/authServices.js";
 export async function registerHandler(req, res) {
   try {
@@ -57,6 +59,43 @@ export async function changePasswordHandler(req, res) {
   } catch (e) {
     if (e.code === "UNAUTHORIZED") return error(401, res, e.message);
     if (e.code === "NOT_FOUND") return error(404, res, e.message);
+    return error(500, res, "Internal server error");
+  }
+}
+
+export async function registerFaceHandler(req, res) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return error(401, res, "Unauthorized");
+    }
+    const { faceDescriptor } = req.body;
+    if (!faceDescriptor || !Array.isArray(faceDescriptor)) {
+      return error(400, res, "Invalid face descriptor");
+    }
+    
+    await registerFace(userId, faceDescriptor);
+    return success(200, res, null, "Face registered successfully");
+  } catch (e) {
+    console.error("registerFace error: ", e);
+    if (e.code === "NOT_FOUND") return error(404, res, e.message);
+    return error(500, res, "Internal server error");
+  }
+}
+
+export async function loginWithFaceHandler(req, res) {
+  try {
+    const { faceDescriptor } = req.body;
+    if (!faceDescriptor || !Array.isArray(faceDescriptor)) {
+      return error(400, res, "Invalid face descriptor");
+    }
+    
+    const result = await loginWithFace(faceDescriptor);
+    return success(200, res, result, "Face login successful");
+  } catch (e) {
+    if (e.code === "UNAUTHORIZED") {
+      return error(401, res, e.message);
+    }
     return error(500, res, "Internal server error");
   }
 }
