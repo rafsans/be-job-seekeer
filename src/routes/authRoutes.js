@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerHandler, loginHandler, changeEmailHandler, changePasswordHandler, } from "../controller/authController.js";
+import { registerHandler, loginHandler, changeEmailHandler, changePasswordHandler, registerFaceHandler, loginWithFaceHandler } from "../controller/authController.js";
 import { authenticate } from "../middleware/authMiddleware.js";
 import { validate } from "../middleware/validationMiddleware.js";
 import { registerSchema, loginSchema, changeEmailSchema, changePasswordSchema, } from "../validation/authValidation.js";
@@ -8,4 +8,6 @@ router.post("/register", validate(registerSchema), registerHandler);
 router.post("/login", validate(loginSchema), loginHandler);
 router.post("/change-email", authenticate, validate(changeEmailSchema), changeEmailHandler);
 router.post("/change-password", authenticate, validate(changePasswordSchema), changePasswordHandler);
+router.post("/face/register", authenticate, registerFaceHandler);
+router.post("/face/login", loginWithFaceHandler);
 export default router;
